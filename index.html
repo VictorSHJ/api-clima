@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Tiempo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous">
+    </script>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    <script>
+//      https://api.openweathermap.org/data/2.5/weather?q=Temuco&units=metric&lang=sp&appid=32d5ab1c434af8150e0f9614ef91e192
+        $(document).ready(function(){  
+           
+            $("#BntEnviar").click(function(){
+
+                var ciudad = $("#InCiudad").val();
+                if (ciudad == ""){
+                    toastr.error("Debe ingresar la Ciudad !", "¡ Error !"); 
+                }
+                else{
+                   
+                    var url = (`https://api.openweathermap.org/data/2.5/weather?q=${ciudad}&units=metric&lang=sp&appid=32d5ab1c434af8150e0f9614ef91e192`);
+                    toastr.warning(url);
+
+                    $("#linea1").html("");
+                    $("#linea2").html("");
+                    $("#linea3").html("");
+
+                    $.get(url, function(res){
+                        
+                        var iconourl = `http://openweathermap.org/img/w/${res.weather[0].icon}.png`;
+
+                        $("#linea1").append(`<div class="col-2"><label>${res.name} :</label></div>`);
+                        $("#linea1").append(`<div class="col-2"><label>${res.weather[0].main}, ${res.weather[0].description}</label></div>`); 
+                        $("#linea1").append(`<div class="row"><div class="col-2"></div><div class="col-2"><img src="${iconourl}" alt="Icono"></div></div>`);
+                        
+                        $("#linea2").append(`<div class="col-2"><label>Temperatura :</label></div>`);
+                        $("#linea2").append(`<div class="col-2"><label>${res.main.temp} °C</label></div>`);
+
+                        $("#linea3").append(`<div class="col-2"><label>Coordenadas :</label></div>`);
+                        $("#linea3").append(`<div class="col-2"><label>${res.coord.lat} ,${res.coord.lon}</label></div>`);
+
+                    }, "json");
+                }
+            });
+        });    
+    </script>
+
+    <style>
+        /* mis estilos */
+    </style>
+
+</head>
+<body>
+    <div class="container-fluid">
+        <h2>El Tiempo</h2>
+        <div class="row pt-3">
+            <div class="col">
+                <label>Ciudad :</label>
+                <input required type="text" id="InCiudad" placeholder="Ingrese la Ciudad">
+                <button id="BntEnviar" class="btn btn-sm btn-outline-primary" >Consultar</button>
+            </div>
+        </div>
+
+        <div id="linea1" class="row pt-4 border">
+        </div> 
+        <div id="linea2" class="row pt-2">
+        </div>
+        <div id="linea3" class="row pt-2">
+        </div>
+    </div>
+      
+</body>
+</html>
